@@ -23,7 +23,8 @@ jobs:
         
           - name: Run test Deployment
             run: |
-                ssh -i /tmp/id_rsa.pem ubuntu@52.90.4.33 'bash  < /home/ubuntu/deploy.sh'
+                ssh -i /tmp/id_rsa.pem ubuntu@52.90.4.33 'bash  < /home/ubuntu/deploy.sh' 
+                git config --global --add safe.directory /home/ubuntu/first-repo
                 rm /tmp/id_rsa.pem
             env:
                 ACTIONS_RUNNER_DEBUG: true
