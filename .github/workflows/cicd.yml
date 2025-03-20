@@ -1,0 +1,29 @@
+name: ci-cd-pipeline
+on: 
+    push:
+        branches: main
+jobs:
+    upload-code-to-server:
+        runs-on: ubuntu-latest
+        env:
+            DOMAIN: 52.90.4.33
+        steps:
+          - name: Checkout repo
+            uses: actions/checkout@v2
+            with:
+                ref: main 
+          - name: Add server to known hosts
+            run: |
+                echo "${{ secrets.UBUNTU_KEY }}" > /tmp/id_rsa.pem
+                chmod 600 /tmp/id_rsa.pem
+                mkdir -p ~/.ssh
+                ssh-keyscan -H 52.90.4.33 >> ~/.ssh/known_hosts
+            env:
+                ACTIONS_RUNNER_DEBUG: true
+        
+          - name: Run test Deployment
+            run: |
+                ssh -i /tmp/id_rsa.pem ubuntu@52.90.4.33 'bash  < /home/ubuntu/deploy.sh'
+                rm /tmp/id_rsa.pem
+            env:
+                ACTIONS_RUNNER_DEBUG: true
